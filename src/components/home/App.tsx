@@ -8,7 +8,7 @@ const App: React.FC = (): ReactElement => {
       <header className="App-header">
         <img src={logo} className="App-log  o" alt="logo" />
         <p>
-          Edit <code>src/App.tsx</code> and save to ddreload. yeaa boy
+          Edit <code>src/App.tsx</code> and save to ddreload. yeaa boy merge
         </p>
         <a
           className="App-link"
