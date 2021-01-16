@@ -1,0 +1,12 @@
+.container-page {
+  flex-direction: row;
+  display: flex;
+}
+
+.content {
+  background-color: blue;
+  width: 85vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
