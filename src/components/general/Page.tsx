@@ -1,12 +1,15 @@
 import React, { ReactElement } from "react";
 import Menu from "./Menu";
-import "../../assets/css/general/Page.css";
+import useStyles from "../../assets/styles/general/Page";
+import useWindowDimensions from "../../hooks/useWindowsDimensions";
 
 const Page: React.FC = ({ children }): ReactElement => {
+  const { height, width } = useWindowDimensions();
+  const classes = useStyles();
   return (
-    <div className="container-page">
+    <div style={{ width, height }} className={classes.container}>
       <Menu />
-      <div className="content">{children}</div>
+      <div className={classes.content}>{children}</div>
     </div>
   );
 };

@@ -1,10 +1,11 @@
 import React, { ReactElement } from "react";
-import "../../assets/css/general/Menu.css";
 import CustomButton from "./CustomBotton";
+import useStyles from "../../assets/styles/general/Menu";
 
 const Menu: React.FC = (): ReactElement => {
+  const classes = useStyles();
   return (
-    <div className="container-menu">
+    <div className={classes.container}>
       <CustomButton text="INVEST" />
     </div>
   );
