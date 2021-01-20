@@ -4,6 +4,6 @@ import App from "../../components/home/App";
 
 test("renders learn react link", () => {
   const { getByText } = render(<App />);
-  const linkElement = getByText(/INVEST/i);
+  const linkElement = getByText(/Cozma Catalin/i);
   expect(linkElement).toBeInTheDocument();
 });

@@ -6,8 +6,8 @@ const useStyles = makeStyles({
     flexDirection: "row",
   },
   content: {
-    backgroundColor: "blue",
-    width: "85%",
+    width: "82%",
+    padding: "0px 35px 35px 35px",
   },
 });
 
