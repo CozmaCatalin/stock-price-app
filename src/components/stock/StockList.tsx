@@ -2,7 +2,9 @@ import React, { ReactElement } from "react";
 import { FixedSizeList } from "react-window";
 import { ListItem, ListItemText, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { Colors } from "../../theme";
+import { Colors, ApplicationStyles } from "../../theme";
+
+const { center } = ApplicationStyles;
 
 const data = [
   {
@@ -298,18 +300,25 @@ const data = [
 ];
 const useStyles = makeStyles({
   container: {
-    width: "35%",
+    width: "25%",
     height: "100%",
   },
   listContainer: {
     width: "100%",
   },
   boxList: {
-    width: "90%",
-    padding: "20px",
+    width: "100%",
+    padding: "15px",
   },
   itemContainer: {
     borderRadius: 10,
+  },
+  listItem: {
+    width: "40%",
+    ...center,
+  },
+  index: {
+    width: "20%",
   },
 });
 
@@ -322,8 +331,15 @@ function renderRow(props) {
       button
       style={style}
       key={index}>
-      <ListItemText primary={`${index}.${data[index].symbol}`} />
-      <ListItemText primary={`${data[index].figi}`} />
+      <ListItemText className={classes.index} primary={`${index}`} />
+      <ListItemText
+        className={classes.listItem}
+        primary={`${data[index].symbol}`}
+      />
+      <ListItemText
+        className={classes.listItem}
+        primary={`${data[index].mic}`}
+      />
     </ListItem>
   );
 }
@@ -340,7 +356,7 @@ const StockList: React.FC = (): ReactElement => {
         borderColor={Colors.lighterText}>
         <FixedSizeList
           className={classes.listContainer}
-          height={250}
+          height={550}
           itemSize={46}
           itemCount={data.length}>
           {renderRow}
