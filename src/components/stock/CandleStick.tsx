@@ -1,5 +1,6 @@
 import React, { Fragment, ReactElement } from "react";
 import Plot from "react-plotly.js";
+import { Colors } from "../../theme";
 
 interface CandleStickInterface {
   financialItem: any;
@@ -21,7 +22,7 @@ const CandleStickChart: React.FC<CandleStickInterface> = ({
             close: financialItem.financialChartCloseValues,
             decreasing: { line: { color: "red" } },
             high: financialItem.financialChartHighValues,
-            increasing: { line: { color: "green" } },
+            increasing: { line: { color: Colors.primary } },
             line: { color: "rgba(31,119,180,1)" },
             low: financialItem.financialChartLowValues,
             open: financialItem.financialChartOpenValues,
@@ -30,7 +31,7 @@ const CandleStickChart: React.FC<CandleStickInterface> = ({
         ]}
         layout={{
           width: 800,
-          height: 550,
+          height: 500,
           title: financialItemName,
           dragmode: "zoom",
           showlegend: false,

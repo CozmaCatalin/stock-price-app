@@ -27,13 +27,19 @@ const useStyles = makeStyles({
 
 const App: React.FC = (): ReactElement => {
   const classes = useStyles();
+  const [currentStock, setCurrentStock] = React.useState("AAPL");
   return (
     <Page>
       <p className={classes.welcomeMessage}>Welcome to Stock Price App</p>
-      <p className={classes.goodMorningMessage}>Good morning, Cozma Catalin!</p>
+      <p className={classes.goodMorningMessage}>
+        Good morning, Cozma Catalin !
+      </p>
       <div className={classes.stockContainer}>
-        <StockChart />
-        <StockList />
+        <StockChart currentStock={currentStock} />
+        <StockList
+          setCurrentStock={setCurrentStock}
+          currentStock={currentStock}
+        />
       </div>
     </Page>
   );

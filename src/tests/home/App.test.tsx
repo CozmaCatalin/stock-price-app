@@ -7,3 +7,5 @@ test("renders learn react link", () => {
   const linkElement = getByText(/Search/i);
   expect(linkElement).toBeInTheDocument();
 });
+
+// "pre-commit": "yarn run test --watchAll=false --silent && lint-staged"

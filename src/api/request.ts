@@ -3,6 +3,7 @@ import axios, { Method, AxiosResponse } from "axios";
 const api = axios.create({
   baseURL: process.env.REACT_APP_HOST_BACKEND,
 });
+const API_KEY = "HYL9M4HOXII152WI";
 
 const request = <T>(
   method: Method,
@@ -18,7 +19,6 @@ const request = <T>(
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getFinancialItem = async (symbol): Promise<any> => {
-  const API_KEY = "HYL9M4HOXII152WI";
   const finItemSymbol = symbol;
   // eslint-disable-next-line prefer-const
   let financialChartXValuesFunction = [];
@@ -71,6 +71,10 @@ export const getFinancialItem = async (symbol): Promise<any> => {
     financialChartLowValues: financialChartLowValuesFunction,
   };
   return financialItem;
+};
+
+export const getStocksData = async (): Promise<any> => {
+  return 1;
 };
 
 export default request;

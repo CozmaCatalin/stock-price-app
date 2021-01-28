@@ -48,9 +48,7 @@
     "extends": "react-app"
   },
   "husky": {
-    "hooks": {
-      "pre-commit": "yarn run test --watchAll=false --silent && lint-staged"
-    }
+    "hooks": {}
   },
   "lint-staged": {
     "**/*.{js,ts,tsx}": [

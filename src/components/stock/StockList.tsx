@@ -1,12 +1,12 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, Dispatch, SetStateAction } from "react";
 import { FixedSizeList } from "react-window";
 import { ListItem, ListItemText, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { Colors, ApplicationStyles } from "../../theme";
+import { Colors, ApplicationStyles, Metrics } from "../../theme";
 
 const { center } = ApplicationStyles;
 
-const data = [
+const stockData = [
   {
     currency: "USD",
     description: "PHOSPHATE HOLDINGS INC",
@@ -306,12 +306,19 @@ const useStyles = makeStyles({
   listContainer: {
     width: "100%",
   },
+  selectedItemContainer: {
+    backgroundColor: Colors.primary,
+  },
   boxList: {
     width: "100%",
     padding: "15px",
   },
   itemContainer: {
-    borderRadius: 10,
+    borderRadius: Metrics.defaultBorderRadius,
+  },
+  itemContainerSelected: {
+    borderRadius: Metrics.defaultBorderRadius,
+    backgroundColor: Colors.primary,
   },
   listItem: {
     width: "40%",
@@ -322,29 +329,44 @@ const useStyles = makeStyles({
   },
 });
 
+interface StockListInterface {
+  currentStock: string;
+  setCurrentStock: Dispatch<SetStateAction<string>>;
+}
+
 function renderRow(props) {
-  const classes = useStyles();
-  const { index, style } = props;
+  const classes = useStyles(props);
+  const { index, style, data } = props;
   return (
     <ListItem
-      className={classes.itemContainer}
+      className={
+        stockData[index].symbol === data.currentStock
+          ? classes.itemContainerSelected
+          : classes.itemContainer
+      }
       button
+      onClick={() => {
+        data.setCurrentStock(stockData[index].symbol);
+      }}
       style={style}
       key={index}>
       <ListItemText className={classes.index} primary={`${index}`} />
       <ListItemText
         className={classes.listItem}
-        primary={`${data[index].symbol}`}
+        primary={`${stockData[index].symbol}`}
       />
       <ListItemText
         className={classes.listItem}
-        primary={`${data[index].mic}`}
+        primary={`${stockData[index].mic}`}
       />
     </ListItem>
   );
 }
 
-const StockList: React.FC = (): ReactElement => {
+const StockList: React.FC<StockListInterface> = ({
+  setCurrentStock,
+  currentStock,
+}): ReactElement => {
   const classes = useStyles();
   return (
     <div className={classes.container}>
@@ -356,9 +378,10 @@ const StockList: React.FC = (): ReactElement => {
         borderColor={Colors.lighterText}>
         <FixedSizeList
           className={classes.listContainer}
-          height={550}
+          height={500}
           itemSize={46}
-          itemCount={data.length}>
+          itemCount={stockData.length}
+          itemData={{ setCurrentStock, currentStock }}>
           {renderRow}
         </FixedSizeList>
       </Box>

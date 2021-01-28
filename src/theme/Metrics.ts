@@ -1,3 +1,3 @@
 export default {
-  defaultBorderRadius: 15,
+  defaultBorderRadius: 5,
 };

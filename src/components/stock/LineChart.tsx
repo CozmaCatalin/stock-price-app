@@ -26,7 +26,7 @@ const LineChart: React.FC<LineChartInterface> = ({
             marker: { color: color },
           },
         ]}
-        layout={{ width: 800, height: 550, title: financialItemName }}
+        layout={{ width: 800, height: 450 }}
         options={{ displaylogo: "false" }}
       />
     </Fragment>
