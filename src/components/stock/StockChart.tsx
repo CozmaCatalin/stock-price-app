@@ -17,8 +17,9 @@ const { alignCenter } = ApplicationStyles;
 
 const useStyles = makeStyles({
   container: {
-    width: "73%",
+    width: "60%",
     height: "100%",
+    padding: "20px",
   },
   topContainer: {
     ...alignCenter,
@@ -53,7 +54,7 @@ const StockChart: React.FC<StockChartProps> = ({
     });
   }, [currentStock]);
   return (
-    <Box className={classes.container} borderRadius={15}>
+    <Box className={classes.container} borderRadius={15} border={2}>
       <div className={classes.topContainer}>
         <FormControl id="stock-type-of-chart-form-control">
           <InputLabel shrink id="type-of-chart-select-label">

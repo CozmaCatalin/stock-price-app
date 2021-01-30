@@ -18,10 +18,11 @@ const useStyles = makeStyles({
   },
   stockContainer: {
     flexDirection: "row",
-    ...center,
     width: "100%",
-    height: "50%",
+    height: "70%",
     marginTop: "3%",
+    display: "flex",
+    justifyContent: "space-around",
   },
 });
 

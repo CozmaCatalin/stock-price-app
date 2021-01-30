@@ -1,5 +1,4 @@
 import React, { ReactElement } from "react";
-import Button from "@material-ui/core/Button";
 import Menu from "./Menu";
 import useStyles from "../../assets/styles/general/Page";
 import useWindowDimensions from "../../hooks/useWindowsDimensions";

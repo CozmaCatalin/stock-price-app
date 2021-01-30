@@ -73,8 +73,23 @@ export const getFinancialItem = async (symbol): Promise<any> => {
   return financialItem;
 };
 
-export const getStocksData = async (): Promise<any> => {
-  return 1;
+export const getStocksData = async (symbolName: string): Promise<any> => {
+  // eslint-disable-next-line prefer-const
+  let stockData;
+  try {
+    await fetch(
+      `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${symbolName}&apikey=${API_KEY}`
+    )
+      .then(function (response) {
+        return response.json();
+      })
+      .then(function (data) {
+        stockData = data;
+      });
+  } catch (e) {
+    console.log(e);
+  }
+  return stockData;
 };
 
 export default request;
