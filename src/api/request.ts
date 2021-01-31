@@ -18,8 +18,26 @@ const request = <T>(
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const getFinancialItem = async (symbol): Promise<any> => {
-  const finItemSymbol = symbol;
+export const getFinancialItem = async (
+  symbol: string,
+  periodSelected: string
+): Promise<any> => {
+  // eslint-disable-next-line prefer-const
+  let period = "";
+  let functionType = "";
+  if (periodSelected === "Days") {
+    period = "Time Series (Daily)";
+    functionType = "TIME_SERIES_DAILY";
+  }
+  if (periodSelected === "Weeks") {
+    period = "Weekly Time Series";
+    functionType = "TIME_SERIES_WEEKLY";
+  }
+  if (periodSelected === "Monthly") {
+    period = "Monthly Time Series";
+    functionType = "TIME_SERIES_MONTHLY";
+  }
+  const finItemSymbol: string = symbol;
   // eslint-disable-next-line prefer-const
   let financialChartXValuesFunction = [];
   // eslint-disable-next-line prefer-const
@@ -33,7 +51,7 @@ export const getFinancialItem = async (symbol): Promise<any> => {
 
   try {
     await fetch(
-      `https://www.alphavantage.co/query?function=TIME_SERIES_DAILY_ADJUSTED&symbol=${finItemSymbol}&outputsize=compact&apikey=${API_KEY}`
+      `https://www.alphavantage.co/query?function=${functionType}&symbol=${finItemSymbol}&outputsize=compact&apikey=${API_KEY}`
     )
       // eslint-disable-next-line func-names
       .then(function (response) {
@@ -43,20 +61,12 @@ export const getFinancialItem = async (symbol): Promise<any> => {
       .then(function (data) {
         console.log(data);
 
-        Object.entries(data["Time Series (Daily)"]).forEach(([key, value]) => {
+        Object.entries(data[period]).forEach(([key, value]) => {
           financialChartXValuesFunction.push(key);
-          financialChartCloseValuesFunction.push(
-            data["Time Series (Daily)"][key]["4. close"]
-          );
-          financialChartOpenValuesFunction.push(
-            data["Time Series (Daily)"][key]["1. open"]
-          );
-          financialChartHighValuesFunction.push(
-            data["Time Series (Daily)"][key]["2. high"]
-          );
-          financialChartLowValuesFunction.push(
-            data["Time Series (Daily)"][key]["3. low"]
-          );
+          financialChartCloseValuesFunction.push(data[period][key]["4. close"]);
+          financialChartOpenValuesFunction.push(data[period][key]["1. open"]);
+          financialChartHighValuesFunction.push(data[period][key]["2. high"]);
+          financialChartLowValuesFunction.push(data[period][key]["3. low"]);
         });
       });
   } catch (e) {

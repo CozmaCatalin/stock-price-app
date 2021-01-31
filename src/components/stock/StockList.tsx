@@ -19,6 +19,10 @@ const useStyles = makeStyles({
   container: {
     width: "20%",
     height: "100%",
+    display: "flex",
+    flexDirection: "column",
+    padding: "25px",
+    backgroundColor: Colors.white,
   },
   listContainer: {
     width: "100%",
@@ -29,6 +33,7 @@ const useStyles = makeStyles({
   boxList: {
     width: "100%",
     padding: "15px",
+    marginTop: "15px",
   },
   itemContainer: {
     borderRadius: Metrics.defaultBorderRadius,
@@ -57,7 +62,7 @@ const StockList: React.FC<StockListInterface> = ({
 }): ReactElement => {
   const classes = useStyles();
   const [stockData, setStockData] = React.useState([]);
-  const [symbolSearch, setSymbolSearch] = React.useState("");
+  const [symbolSearch, setSymbolSearch] = React.useState("AAPL");
   const [isGettingData, setIsGettingData] = React.useState(false);
 
   function getData() {
@@ -68,6 +73,10 @@ const StockList: React.FC<StockListInterface> = ({
       console.log(bestMatches);
     });
   }
+
+  React.useEffect(() => {
+    getData();
+  }, []);
 
   function renderRow(props) {
     const { index, style } = props;
@@ -80,7 +89,7 @@ const StockList: React.FC<StockListInterface> = ({
         }
         button
         onClick={() => {
-          setCurrentStock(stockData[index]["1. symbol"]);
+          setCurrentStock(stockData[index]);
         }}
         style={style}
         key={index}>
@@ -98,7 +107,11 @@ const StockList: React.FC<StockListInterface> = ({
   }
 
   return (
-    <div className={classes.container}>
+    <Box
+      border={1}
+      borderRadius={10}
+      className={classes.container}
+      borderColor={Colors.lighterText}>
       <Grid container spacing={1} alignItems="flex-end">
         <Grid item>
           <TextField
@@ -118,18 +131,18 @@ const StockList: React.FC<StockListInterface> = ({
       </Grid>
       <Box
         className={classes.boxList}
-        border={1.5}
+        border={0}
         borderRadius={15}
         borderColor={Colors.lighterText}>
         <FixedSizeList
           className={classes.listContainer}
-          height={500}
+          height={300}
           itemSize={46}
           itemCount={stockData.length}>
           {renderRow}
         </FixedSizeList>
       </Box>
-    </div>
+    </Box>
   );
 };
 

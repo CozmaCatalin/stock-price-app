@@ -31,8 +31,7 @@ const CandleStickChart: React.FC<CandleStickInterface> = ({
         ]}
         layout={{
           width: 800,
-          height: 500,
-          title: financialItemName,
+          height: 400,
           dragmode: "zoom",
           showlegend: false,
           xaxis: {
