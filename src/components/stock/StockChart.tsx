@@ -14,7 +14,7 @@ import LineChart from "./LineChart";
 import { getFinancialItem } from "../../api/request";
 import { Colors, ApplicationStyles } from "../../theme";
 
-const { alignCenter } = ApplicationStyles;
+const { center } = ApplicationStyles;
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -52,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
     padding: "0px 0px 0px 0px",
     fontSize: "25px",
     fontWeight: "bold",
+    marginRight: "10px",
   },
   actionsContainer: {
     display: "flex",
@@ -80,6 +81,23 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  smallGrayText: {
+    fontSize: "13px",
+    margin: "0px 0px 0px 0px",
+    padding: "0px 0px 0px 0px",
+    color: Colors.darkGray,
+  },
+  smallBlackText: {
+    fontSize: "12px",
+    margin: "0px 0px 0px 0px",
+    padding: "0px 0px 0px 0px",
+    color: "black",
+    marginRight: "8px",
+  },
+  infoContainer: {
+    ...center,
+    flexDirection: "row",
   },
 }));
 
@@ -135,6 +153,15 @@ const StockChart: React.FC<StockChartProps> = ({
       </Button>
     );
   }
+
+  function info(type, value) {
+    return (
+      <div className={classes.infoContainer}>
+        <p className={classes.smallBlackText}>{type}</p>
+        <p className={classes.smallGrayText}>{value}</p>
+      </div>
+    );
+  }
   return (
     <Box
       className={classes.container}
@@ -149,12 +176,12 @@ const StockChart: React.FC<StockChartProps> = ({
             <p className={classes.currentStock}>{currentStock["2. name"]}</p>
             <p className={classes.currentStock}>{currentStock["1. symbol"]}</p>
             <div className={classes.priceContainer}>
-              <p className={classes.price}>{closePrice} </p>
+              <p className={classes.price}>{`${closePrice}`}</p>
               <p className={classes.currentStock}>
                 {currentStock["8. currency"]}
               </p>
             </div>
-            <p className={classes.text}>
+            <p className={classes.smallGrayText}>
               {currentStock["5. marketOpen"]} - {currentStock["6. marketClose"]}{" "}
               {currentStock["7. timezone"]}
             </p>
@@ -197,11 +224,11 @@ const StockChart: React.FC<StockChartProps> = ({
         )}
       </div>
       <div className={classes.infoStock}>
-        <p className={classes.text}>Open - {openPrice}</p>
-        <p className={classes.text}>High - {highPrice}</p>
-        <p className={classes.text}>Low - {lowPrice}</p>
-        <p className={classes.text}>Type - {currentStock["3. type"]}</p>
-        <p className={classes.text}>Low - {currentStock["4. region"]}</p>
+        {info("Open", openPrice)}
+        {info("High", highPrice)}
+        {info("Low", lowPrice)}
+        {info("Type", currentStock["3. type"])}
+        {info("Region", currentStock["4. region"])}
       </div>
     </Box>
   );
