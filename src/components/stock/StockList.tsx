@@ -118,7 +118,6 @@ const StockList: React.FC<StockListInterface> = ({
   function getData() {
     setIsGettingData(true);
     getStocksData(symbolSearch).then((data: ISymbols) => {
-      console.log(JSON.stringify(data, null, "^^^"));
       if (data.bestMatches) {
         setStockData(data.bestMatches);
         setIsGettingData(false);

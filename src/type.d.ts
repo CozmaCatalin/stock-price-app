@@ -28,7 +28,7 @@ interface IFinancialItem {
   financialChartOpenValues: Array<string>;
   financialChartHighValues: Array<string>;
   financialChartLowValues: Array<string>;
-  Note: string;
+  Note?: string;
 }
 
 interface INote {

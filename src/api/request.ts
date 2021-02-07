@@ -61,7 +61,17 @@ export const getFinancialItem = async (
       })
       // eslint-disable-next-line func-names
       .then(function (data) {
-        if (!data.Note) {
+        if (data.Note) {
+          financialItem = {
+            symbol: finItemSymbol,
+            financialChartXValues: [],
+            financialChartCloseValues: [],
+            financialChartOpenValues: [],
+            financialChartHighValues: [],
+            financialChartLowValues: [],
+            Note: data.Note,
+          };
+        } else {
           Object.entries(data[period]).forEach(([key]) => {
             financialChartXValuesFunction.push(key);
             financialChartCloseValuesFunction.push(
@@ -80,8 +90,6 @@ export const getFinancialItem = async (
             financialChartLowValues: financialChartLowValuesFunction,
             Note: "",
           };
-        } else {
-          financialItem.Note = data.Note;
         }
       });
   } catch (e) {
