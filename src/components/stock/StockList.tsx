@@ -8,12 +8,35 @@ import {
   CircularProgress,
   TextField,
 } from "@material-ui/core";
-import { Search } from "@material-ui/icons";
-import { makeStyles } from "@material-ui/core/styles";
+import { FormatListBulleted } from "@material-ui/icons";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { getStocksData } from "../../api/request";
 import { Colors, ApplicationStyles, Metrics } from "../../theme";
+import { Dialog } from "../../components";
 
-const { center } = ApplicationStyles;
+const { center, alignCenter } = ApplicationStyles;
+
+const CssTextField = withStyles({
+  root: {
+    "& label.Mui-focused": {
+      color: Colors.primary,
+    },
+    "& .MuiInput-underline:after": {
+      borderBottomColor: "green",
+    },
+    "& .MuiOutlinedInput-root": {
+      "& fieldset": {
+        borderColor: Colors.lighterText,
+      },
+      "&:hover fieldset": {
+        borderColor: Colors.mediumText,
+      },
+      "&.Mui-focused fieldset": {
+        borderColor: Colors.primary,
+      },
+    },
+  },
+})(TextField);
 
 const useStyles = makeStyles({
   container: {
@@ -21,8 +44,9 @@ const useStyles = makeStyles({
     height: "100%",
     display: "flex",
     flexDirection: "column",
-    padding: "25px",
+    padding: "20px 20px 0px 20px",
     backgroundColor: Colors.white,
+    alignItems: "center",
   },
   listContainer: {
     width: "100%",
@@ -32,7 +56,6 @@ const useStyles = makeStyles({
   },
   boxList: {
     width: "100%",
-    padding: "15px",
     marginTop: "15px",
   },
   itemContainer: {
@@ -45,15 +68,40 @@ const useStyles = makeStyles({
   listItem: {
     width: "40%",
     ...center,
+    justifyContent: "flex-start",
   },
   index: {
-    width: "20%",
+    width: "40%",
+  },
+  searchContainer: {
+    display: "flex",
+    flexDirection: "row",
+    width: "100%",
+  },
+  textInput: {
+    marginRight: "10px",
+  },
+  symbolsTitle: {
+    fontSize: "25px",
+    ...ApplicationStyles.noMargin,
+    ...ApplicationStyles.noPadding,
+  },
+  titleContainer: {
+    width: "100%",
+    marginBottom: "15px",
+    ...alignCenter,
+    flexDirection: "row",
+  },
+  listIcon: {
+    color: Colors.darkText,
+    fontSize: "25px",
+    marginLeft: "10px",
   },
 });
 
 interface StockListInterface {
   currentStock: string;
-  setCurrentStock: Dispatch<SetStateAction<string>>;
+  setCurrentStock: Dispatch<SetStateAction<ISymbol>>;
 }
 
 const StockList: React.FC<StockListInterface> = ({
@@ -62,15 +110,24 @@ const StockList: React.FC<StockListInterface> = ({
 }): ReactElement => {
   const classes = useStyles();
   const [stockData, setStockData] = React.useState([]);
-  const [symbolSearch, setSymbolSearch] = React.useState("AAPL");
+  const [symbolSearch, setSymbolSearch] = React.useState("IBM");
   const [isGettingData, setIsGettingData] = React.useState(false);
+  const [modal, setModal] = React.useState(false);
+  const [content, setContent] = React.useState("");
 
   function getData() {
     setIsGettingData(true);
-    getStocksData(symbolSearch).then(({ bestMatches }) => {
-      setStockData(bestMatches);
-      setIsGettingData(false);
-      console.log(bestMatches);
+    getStocksData(symbolSearch).then((data: ISymbols) => {
+      console.log(JSON.stringify(data, null, "^^^"));
+      if (data.bestMatches) {
+        setStockData(data.bestMatches);
+        setIsGettingData(false);
+      } else {
+        // eslint-disable-next-line no-alert
+        setIsGettingData(false);
+        setModal(true);
+        setContent(data.Note);
+      }
     });
   }
 
@@ -80,6 +137,7 @@ const StockList: React.FC<StockListInterface> = ({
 
   function renderRow(props) {
     const { index, style } = props;
+    const name = stockData[index]["2. name"];
     return (
       <ListItem
         className={
@@ -93,14 +151,13 @@ const StockList: React.FC<StockListInterface> = ({
         }}
         style={style}
         key={index}>
-        <ListItemText className={classes.index} primary={`${index}`} />
         <ListItemText
-          className={classes.listItem}
-          primary={`${stockData[index]["1. symbol"]}`}
+          className={classes.index}
+          primary={`${index + 1}. ${stockData[index]["1. symbol"]}`}
         />
         <ListItemText
           className={classes.listItem}
-          primary={`${stockData[index]["8. currency"]}`}
+          primary={name.length > 10 ? `${name.substring(0, 10)}...` : `${name}`}
         />
       </ListItem>
     );
@@ -108,15 +165,23 @@ const StockList: React.FC<StockListInterface> = ({
 
   return (
     <Box
-      border={1}
+      boxShadow={1}
       borderRadius={10}
       className={classes.container}
       borderColor={Colors.lighterText}>
-      <Grid container spacing={1} alignItems="flex-end">
+      <div className={classes.titleContainer}>
+        <p className={classes.symbolsTitle}>Symbols List</p>
+        <FormatListBulleted className={classes.listIcon} />
+      </div>
+      <Grid className={classes.searchContainer}>
         <Grid item>
-          <TextField
+          <CssTextField
+            className={classes.textInput}
+            size="small"
+            variant="outlined"
             id="input-with-icon-grid"
-            label="Search stock..."
+            label="Search by name..."
+            value={symbolSearch}
             onChange={(m) => {
               setSymbolSearch(m.target.value);
             }}
@@ -127,7 +192,7 @@ const StockList: React.FC<StockListInterface> = ({
             }}
           />
         </Grid>
-        <Grid item>{isGettingData ? <CircularProgress /> : <Search />}</Grid>
+        <Grid item>{isGettingData ? <CircularProgress /> : null}</Grid>
       </Grid>
       <Box
         className={classes.boxList}
@@ -136,12 +201,18 @@ const StockList: React.FC<StockListInterface> = ({
         borderColor={Colors.lighterText}>
         <FixedSizeList
           className={classes.listContainer}
-          height={300}
-          itemSize={46}
+          height={430}
+          itemSize={45}
           itemCount={stockData.length}>
           {renderRow}
         </FixedSizeList>
       </Box>
+      <Dialog
+        title="Something went wrong..."
+        opened={modal}
+        setOpened={setModal}
+        content={content}
+      />
     </Box>
   );
 };

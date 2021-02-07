@@ -4,13 +4,33 @@ interface IArticle {
   body: string;
 }
 
-type ArticleState = {
-  articles: IArticle[];
-};
+interface ISymbol {
+  "1. symbol": string;
+  "2. name": string;
+  "3. type": string;
+  "4. region": string;
+  "5. marketOpen": string;
+  "6. marketClose": string;
+  "7. timezone": string;
+  "8. currency": string;
+  "9. matchScore": string;
+}
 
-type ArticleAction = {
-  type: string;
-  article: IArticle;
-};
+interface ISymbols {
+  bestMatches: Array<ISymbol> | undefined;
+  Note: string | undefined;
+}
 
-type DispatchType = (args: ArticleAction) => ArticleAction;
+interface IFinancialItem {
+  symbol: string;
+  financialChartXValues: Array<string>;
+  financialChartCloseValues: Array<string>;
+  financialChartOpenValues: Array<string>;
+  financialChartHighValues: Array<string>;
+  financialChartLowValues: Array<string>;
+  Note: string;
+}
+
+interface INote {
+  Note: string;
+}

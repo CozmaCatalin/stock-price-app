@@ -1,27 +1,28 @@
-import axios, { Method, AxiosResponse } from "axios";
+/* eslint-disable func-names */
+// import axios, { Method, AxiosResponse } from "axios";
 
-const api = axios.create({
-  baseURL: process.env.REACT_APP_HOST_BACKEND,
-});
+// const api = axios.create({
+//   baseURL: process.env.REACT_APP_HOST_BACKEND,
+// });
 const API_KEY = "HYL9M4HOXII152WI";
 
-const request = <T>(
-  method: Method,
-  url: string,
-  params: any
-): Promise<AxiosResponse<T>> => {
-  return api.request<T>({
-    method,
-    url,
-    params,
-  });
-};
+// const request = <T>(
+//   method: Method,
+//   url: string,
+//   params: any
+// ): Promise<AxiosResponse<T>> => {
+//   return api.request<T>({
+//     method,
+//     url,
+//     params,
+//   });
+// };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getFinancialItem = async (
   symbol: string,
   periodSelected: string
-): Promise<any> => {
+): Promise<IFinancialItem> => {
   // eslint-disable-next-line prefer-const
   let period = "";
   let functionType = "";
@@ -49,6 +50,7 @@ export const getFinancialItem = async (
   // eslint-disable-next-line prefer-const
   let financialChartLowValuesFunction = [];
 
+  let financialItem: IFinancialItem;
   try {
     await fetch(
       `https://www.alphavantage.co/query?function=${functionType}&symbol=${finItemSymbol}&outputsize=compact&apikey=${API_KEY}`
@@ -59,33 +61,38 @@ export const getFinancialItem = async (
       })
       // eslint-disable-next-line func-names
       .then(function (data) {
-        console.log(data);
-
-        Object.entries(data[period]).forEach(([key, value]) => {
-          financialChartXValuesFunction.push(key);
-          financialChartCloseValuesFunction.push(data[period][key]["4. close"]);
-          financialChartOpenValuesFunction.push(data[period][key]["1. open"]);
-          financialChartHighValuesFunction.push(data[period][key]["2. high"]);
-          financialChartLowValuesFunction.push(data[period][key]["3. low"]);
-        });
+        if (!data.Note) {
+          Object.entries(data[period]).forEach(([key]) => {
+            financialChartXValuesFunction.push(key);
+            financialChartCloseValuesFunction.push(
+              data[period][key]["4. close"]
+            );
+            financialChartOpenValuesFunction.push(data[period][key]["1. open"]);
+            financialChartHighValuesFunction.push(data[period][key]["2. high"]);
+            financialChartLowValuesFunction.push(data[period][key]["3. low"]);
+          });
+          financialItem = {
+            symbol: finItemSymbol,
+            financialChartXValues: financialChartXValuesFunction,
+            financialChartCloseValues: financialChartCloseValuesFunction,
+            financialChartOpenValues: financialChartOpenValuesFunction,
+            financialChartHighValues: financialChartHighValuesFunction,
+            financialChartLowValues: financialChartLowValuesFunction,
+            Note: "",
+          };
+        } else {
+          financialItem.Note = data.Note;
+        }
       });
   } catch (e) {
     console.log(e);
   }
-  const financialItem = {
-    symbol: finItemSymbol,
-    financialChartXValues: financialChartXValuesFunction,
-    financialChartCloseValues: financialChartCloseValuesFunction,
-    financialChartOpenValues: financialChartOpenValuesFunction,
-    financialChartHighValues: financialChartHighValuesFunction,
-    financialChartLowValues: financialChartLowValuesFunction,
-  };
   return financialItem;
 };
 
-export const getStocksData = async (symbolName: string): Promise<any> => {
+export const getStocksData = async (symbolName: string): Promise<ISymbols> => {
   // eslint-disable-next-line prefer-const
-  let stockData;
+  let stockData: ISymbols;
   try {
     await fetch(
       `https://www.alphavantage.co/query?function=SYMBOL_SEARCH&keywords=${symbolName}&apikey=${API_KEY}`
@@ -99,7 +106,6 @@ export const getStocksData = async (symbolName: string): Promise<any> => {
   } catch (e) {
     console.log(e);
   }
+
   return stockData;
 };
-
-export default request;

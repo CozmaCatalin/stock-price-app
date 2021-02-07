@@ -2,14 +2,12 @@ import React, { Fragment, ReactElement } from "react";
 import Plot from "react-plotly.js";
 
 interface LineChartInterface {
-  financialItem: any;
-  financialItemName: string;
+  financialItem: IFinancialItem;
   color: string;
 }
 
 const LineChart: React.FC<LineChartInterface> = ({
   financialItem,
-  financialItemName,
   color,
 }): ReactElement => {
   return (
@@ -26,7 +24,22 @@ const LineChart: React.FC<LineChartInterface> = ({
             marker: { color: color },
           },
         ]}
-        layout={{ width: 850, height: 450 }}
+        layout={{
+          width: 800,
+          height: 400,
+          dragmode: "zoom",
+          showlegend: false,
+          hovermode: "closest",
+          xaxis: {
+            showspikes: true,
+            rangeslider: {
+              visible: false,
+            },
+          },
+          yaxis: {
+            autorange: true,
+          },
+        }}
         options={{ displaylogo: "false" }}
       />
     </Fragment>

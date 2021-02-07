@@ -13,10 +13,11 @@ import CandleStick from "./CandleStick";
 import LineChart from "./LineChart";
 import { getFinancialItem } from "../../api/request";
 import { Colors, ApplicationStyles } from "../../theme";
+import { Dialog } from "../../components";
 
 const { center } = ApplicationStyles;
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles({
   container: {
     width: "65%",
     height: "100%",
@@ -51,7 +52,6 @@ const useStyles = makeStyles((theme) => ({
     margin: "0px 0px 0px 0px",
     padding: "0px 0px 0px 0px",
     fontSize: "25px",
-    fontWeight: "bold",
     marginRight: "10px",
   },
   actionsContainer: {
@@ -99,41 +99,56 @@ const useStyles = makeStyles((theme) => ({
     ...center,
     flexDirection: "row",
   },
-}));
+});
 
 interface StockChartProps {
-  currentStock: string;
+  currentStock: ISymbol;
 }
 
 const StockChart: React.FC<StockChartProps> = ({
   currentStock,
 }): ReactElement => {
   const classes = useStyles();
-
-  const [financialItem, setFinancialItem] = React.useState([]);
+  const [financialItem, setFinancialItem] = React.useState<IFinancialItem>({
+    symbol: "",
+    financialChartXValues: [],
+    financialChartCloseValues: [],
+    financialChartOpenValues: [],
+    financialChartHighValues: [],
+    financialChartLowValues: [],
+    Note: "",
+  });
   const [typeOfChart, setTypeOfChart] = React.useState("candle");
   const [gettingStockData, setGettingStockDate] = React.useState(false);
   const [periodSelected, setPeriodSelected] = React.useState("Days");
-  const [closePrice, setClosePrice] = React.useState(0);
-  const [openPrice, setOpenPrice] = React.useState(0);
-  const [highPrice, setHighPrice] = React.useState(0);
-  const [lowPrice, setLowPrice] = React.useState(0);
+  const [closePrice, setClosePrice] = React.useState("0");
+  const [openPrice, setOpenPrice] = React.useState("0");
+  const [highPrice, setHighPrice] = React.useState("0");
+  const [lowPrice, setLowPrice] = React.useState("0");
 
-  const handleChartChange = (e: any) => {
+  const [modal, setModal] = React.useState(false);
+  const [content, setContent] = React.useState("");
+
+  const handleChartChange = (e) => {
     setTypeOfChart(e.target.value);
   };
 
   React.useEffect(() => {
     setGettingStockDate(true);
     getFinancialItem(currentStock["1. symbol"], periodSelected).then(
-      (response) => {
-        setFinancialItem(response);
-        setClosePrice(response.financialChartCloseValues[0]);
-        setOpenPrice(response.financialChartOpenValues[0]);
-        setHighPrice(response.financialChartHighValues[0]);
-        setLowPrice(response.financialChartLowValues[0]);
-        setGettingStockDate(false);
-        console.log(response);
+      (response: IFinancialItem) => {
+        if (!response.Note) {
+          setFinancialItem(response);
+          setClosePrice(response.financialChartCloseValues[0]);
+          setOpenPrice(response.financialChartOpenValues[0]);
+          setHighPrice(response.financialChartHighValues[0]);
+          setLowPrice(response.financialChartLowValues[0]);
+          setGettingStockDate(false);
+        } else {
+          setGettingStockDate(false);
+          setModal(true);
+          setContent(response.Note);
+        }
       }
     );
   }, [currentStock, periodSelected]);
@@ -166,7 +181,7 @@ const StockChart: React.FC<StockChartProps> = ({
     <Box
       className={classes.container}
       borderRadius={15}
-      border={1}
+      boxShadow={1}
       borderColor={Colors.lighterText}>
       <div className={classes.topContainer}>
         {gettingStockData ? (
@@ -191,7 +206,8 @@ const StockChart: React.FC<StockChartProps> = ({
           <ButtonGroup
             disableElevation
             size="small"
-            aria-label="small outlined button group">
+            variant="text"
+            aria-label="text primary button group">
             {customButton("Days")}
             {customButton("Weeks")}
             {customButton("Monthly")}
@@ -211,16 +227,9 @@ const StockChart: React.FC<StockChartProps> = ({
       </div>
       <div>
         {typeOfChart === "line" ? (
-          <LineChart
-            color={Colors.primary}
-            financialItem={financialItem}
-            financialItemName={currentStock}
-          />
+          <LineChart color={Colors.primary} financialItem={financialItem} />
         ) : (
-          <CandleStick
-            financialItem={financialItem}
-            financialItemName={currentStock}
-          />
+          <CandleStick financialItem={financialItem} />
         )}
       </div>
       <div className={classes.infoStock}>
@@ -230,6 +239,12 @@ const StockChart: React.FC<StockChartProps> = ({
         {info("Type", currentStock["3. type"])}
         {info("Region", currentStock["4. region"])}
       </div>
+      <Dialog
+        title="Something went wrong..."
+        opened={modal}
+        setOpened={setModal}
+        content={content}
+      />
     </Box>
   );
 };

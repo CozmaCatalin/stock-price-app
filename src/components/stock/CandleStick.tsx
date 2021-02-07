@@ -3,15 +3,12 @@ import Plot from "react-plotly.js";
 import { Colors } from "../../theme";
 
 interface CandleStickInterface {
-  financialItem: any;
-  financialItemName: string;
+  financialItem: IFinancialItem;
 }
 
 const CandleStickChart: React.FC<CandleStickInterface> = ({
   financialItem,
-  financialItemName,
 }): ReactElement => {
-  console.log(financialItem);
   return (
     // eslint-disable-next-line react/jsx-fragments
     <Fragment>
@@ -34,7 +31,9 @@ const CandleStickChart: React.FC<CandleStickInterface> = ({
           height: 400,
           dragmode: "zoom",
           showlegend: false,
+          hovermode: "closest",
           xaxis: {
+            showspikes: true,
             rangeslider: {
               visible: false,
             },
