@@ -1,8 +1,10 @@
 /* eslint-disable react/jsx-curly-brace-presence */
 import React, { ReactElement } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Page, StockList, StockChart } from "../../components";
+import { Page, StockList, StockChart, Responsive } from "../../components";
 import { ApplicationStyles, Colors } from "../../theme";
+
+const { Desktop } = Responsive;
 
 const { noMargin, noPadding } = ApplicationStyles;
 const defaultStock: ISymbol = {
@@ -58,23 +60,26 @@ const App: React.FC = (): ReactElement => {
     if (hour > 12 && hour < 17) {
       setCurrentTime("Afternoon");
     }
-    if (hour > 17 && hour < 5) {
+    if (hour > 17) {
       setCurrentTime("Evening");
     }
   }, []);
   return (
     <Page>
-      <div className={classes.messageContainer}>
-        <p className={classes.message}>{`Good ${time}!`}</p>
-        <p className={classes.secondMessage}>{`Let's analyze some symbols`}</p>
-      </div>
-      <div className={classes.stockContainer}>
-        <StockChart currentStock={currentStock} />
-        <StockList
-          setCurrentStock={setCurrentStock}
-          currentStock={currentStock["1. symbol"]}
-        />
-      </div>
+      <Desktop>
+        <div className={classes.messageContainer}>
+          <p className={classes.message}>{`Good ${time}!`}</p>
+          <p
+            className={classes.secondMessage}>{`Let's analyze some symbols`}</p>
+        </div>
+        <div className={classes.stockContainer}>
+          <StockChart currentStock={currentStock} />
+          <StockList
+            setCurrentStock={setCurrentStock}
+            currentStock={currentStock["1. symbol"]}
+          />
+        </div>
+      </Desktop>
     </Page>
   );
 };
