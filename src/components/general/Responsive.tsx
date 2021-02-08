@@ -10,7 +10,7 @@ const Tablet = ({ children }) => {
   return isTablet ? children : null;
 };
 const Mobile = ({ children }) => {
-  const isMobile = useMediaQuery({ maxWidth: 767 });
+  const isMobile = useMediaQuery({ maxWidth: 991 });
   return isMobile ? children : null;
 };
 const Default = ({ children }) => {

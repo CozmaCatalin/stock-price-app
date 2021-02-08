@@ -4,10 +4,14 @@ import { Colors } from "../../theme";
 
 interface CandleStickInterface {
   financialItem: IFinancialItem;
+  width: number;
+  height: number;
 }
 
 const CandleStickChart: React.FC<CandleStickInterface> = ({
   financialItem,
+  width,
+  height,
 }): ReactElement => {
   return (
     // eslint-disable-next-line react/jsx-fragments
@@ -27,8 +31,8 @@ const CandleStickChart: React.FC<CandleStickInterface> = ({
           },
         ]}
         layout={{
-          width: 800,
-          height: 400,
+          width,
+          height,
           dragmode: "zoom",
           showlegend: false,
           hovermode: "closest",

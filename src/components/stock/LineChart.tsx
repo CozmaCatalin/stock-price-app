@@ -4,11 +4,15 @@ import Plot from "react-plotly.js";
 interface LineChartInterface {
   financialItem: IFinancialItem;
   color: string;
+  height: number;
+  width: number;
 }
 
 const LineChart: React.FC<LineChartInterface> = ({
   financialItem,
   color,
+  height,
+  width,
 }): ReactElement => {
   return (
     // eslint-disable-next-line react/jsx-fragments
@@ -25,8 +29,8 @@ const LineChart: React.FC<LineChartInterface> = ({
           },
         ]}
         layout={{
-          width: 800,
-          height: 400,
+          width,
+          height,
           dragmode: "zoom",
           showlegend: false,
           hovermode: "closest",

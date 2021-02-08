@@ -14,14 +14,21 @@ import LineChart from "./LineChart";
 import { getFinancialItem } from "../../api/request";
 import { Colors, ApplicationStyles } from "../../theme";
 import { Dialog } from "../../components";
+import useWindowDimensions from "../../hooks/useWindowsDimensions";
 
 const { center } = ApplicationStyles;
 
 const useStyles = makeStyles({
-  container: {
+  mobileContainer: {
+    width: "90%",
+    height: "100%",
+    padding: "20px 20px 20px 20px",
+    backgroundColor: Colors.white,
+  },
+  desktopContainer: {
     width: "65%",
     height: "100%",
-    padding: "20px 20px 0px 20px",
+    padding: "20px 20px 20px 20px",
     backgroundColor: Colors.white,
   },
   topContainer: {
@@ -103,10 +110,12 @@ const useStyles = makeStyles({
 
 interface StockChartProps {
   currentStock: ISymbol;
+  desktop: boolean;
 }
 
 const StockChart: React.FC<StockChartProps> = ({
   currentStock,
+  desktop,
 }): ReactElement => {
   const classes = useStyles();
   const [financialItem, setFinancialItem] = React.useState<IFinancialItem>({
@@ -128,6 +137,7 @@ const StockChart: React.FC<StockChartProps> = ({
 
   const [modal, setModal] = React.useState(false);
   const [content, setContent] = React.useState("");
+  const size = useWindowDimensions();
 
   const handleChartChange = (e) => {
     setTypeOfChart(e.target.value);
@@ -179,7 +189,7 @@ const StockChart: React.FC<StockChartProps> = ({
   }
   return (
     <Box
-      className={classes.container}
+      className={desktop ? classes.desktopContainer : classes.mobileContainer}
       borderRadius={15}
       boxShadow={1}
       borderColor={Colors.lighterText}>
@@ -227,9 +237,18 @@ const StockChart: React.FC<StockChartProps> = ({
       </div>
       <div>
         {typeOfChart === "line" ? (
-          <LineChart color={Colors.primary} financialItem={financialItem} />
+          <LineChart
+            width={desktop ? size.width * 0.65 : size.width * 0.9}
+            height={size.height * 0.52}
+            color={Colors.primary}
+            financialItem={financialItem}
+          />
         ) : (
-          <CandleStick financialItem={financialItem} />
+          <CandleStick
+            width={desktop ? size.width * 0.65 : size.width * 0.9}
+            height={size.height * 0.52}
+            financialItem={financialItem}
+          />
         )}
       </div>
       <div className={classes.infoStock}>

@@ -4,9 +4,9 @@ import { makeStyles } from "@material-ui/core/styles";
 import { Page, StockList, StockChart, Responsive } from "../../components";
 import { ApplicationStyles, Colors } from "../../theme";
 
-const { Desktop } = Responsive;
+const { Desktop, Mobile } = Responsive;
 
-const { noMargin, noPadding } = ApplicationStyles;
+const { noMargin, noPadding, center } = ApplicationStyles;
 const defaultStock: ISymbol = {
   "1. symbol": "IBMK",
   "2. name": "BTC iShares iBonds Dec 2022 Term Muni Bond ETF",
@@ -20,13 +20,19 @@ const defaultStock: ISymbol = {
 };
 
 const useStyles = makeStyles({
-  stockContainer: {
+  stockContainerDesktop: {
     flexDirection: "row",
     width: "100%",
-    height: "87%",
     marginTop: "2%",
     display: "flex",
     justifyContent: "space-around",
+  },
+  stockContainerMobile: {
+    flexDirection: "column",
+    width: "100%",
+    display: "flex",
+    ...center,
+    marginTop: "2%",
   },
   message: {
     fontSize: "25px",
@@ -66,20 +72,30 @@ const App: React.FC = (): ReactElement => {
   }, []);
   return (
     <Page>
+      <div className={classes.messageContainer}>
+        <p className={classes.message}>{`Good ${time}!`}</p>
+        <p className={classes.secondMessage}>{`Let's analyze some symbols`}</p>
+      </div>
       <Desktop>
-        <div className={classes.messageContainer}>
-          <p className={classes.message}>{`Good ${time}!`}</p>
-          <p
-            className={classes.secondMessage}>{`Let's analyze some symbols`}</p>
-        </div>
-        <div className={classes.stockContainer}>
-          <StockChart currentStock={currentStock} />
+        <div className={classes.stockContainerDesktop}>
+          <StockChart desktop currentStock={currentStock} />
           <StockList
+            desktop
             setCurrentStock={setCurrentStock}
             currentStock={currentStock["1. symbol"]}
           />
         </div>
       </Desktop>
+      <Mobile>
+        <div className={classes.stockContainerMobile}>
+          <StockChart desktop={false} currentStock={currentStock} />
+          <StockList
+            desktop={false}
+            setCurrentStock={setCurrentStock}
+            currentStock={currentStock["1. symbol"]}
+          />
+        </div>
+      </Mobile>
     </Page>
   );
 };

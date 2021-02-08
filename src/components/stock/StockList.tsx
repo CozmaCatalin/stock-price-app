@@ -13,6 +13,7 @@ import { makeStyles, withStyles } from "@material-ui/core/styles";
 import { getStocksData } from "../../api/request";
 import { Colors, ApplicationStyles, Metrics } from "../../theme";
 import { Dialog } from "../../components";
+import useWindowDimensions from "../../hooks/useWindowsDimensions";
 
 const { center, alignCenter } = ApplicationStyles;
 
@@ -39,14 +40,23 @@ const CssTextField = withStyles({
 })(TextField);
 
 const useStyles = makeStyles({
-  container: {
+  desktopContainer: {
     width: "20%",
+    display: "flex",
+    flexDirection: "column",
+    padding: "20px 20px 10px 20px",
+    backgroundColor: Colors.white,
+    alignItems: "center",
+  },
+  mobileContainer: {
+    width: "90%",
     height: "100%",
     display: "flex",
     flexDirection: "column",
-    padding: "20px 20px 0px 20px",
+    padding: "20px 20px 20px 20px",
     backgroundColor: Colors.white,
     alignItems: "center",
+    marginTop: "2%",
   },
   listContainer: {
     width: "100%",
@@ -102,11 +112,13 @@ const useStyles = makeStyles({
 interface StockListInterface {
   currentStock: string;
   setCurrentStock: Dispatch<SetStateAction<ISymbol>>;
+  desktop: boolean;
 }
 
 const StockList: React.FC<StockListInterface> = ({
   setCurrentStock,
   currentStock,
+  desktop,
 }): ReactElement => {
   const classes = useStyles();
   const [stockData, setStockData] = React.useState([]);
@@ -114,6 +126,7 @@ const StockList: React.FC<StockListInterface> = ({
   const [isGettingData, setIsGettingData] = React.useState(false);
   const [modal, setModal] = React.useState(false);
   const [content, setContent] = React.useState("");
+  const size = useWindowDimensions();
 
   function getData() {
     setIsGettingData(true);
@@ -156,7 +169,11 @@ const StockList: React.FC<StockListInterface> = ({
         />
         <ListItemText
           className={classes.listItem}
-          primary={name.length > 10 ? `${name.substring(0, 10)}...` : `${name}`}
+          primary={
+            name.length > 10
+              ? `${name.substring(0, desktop ? 10 : 35)}...`
+              : `${name}`
+          }
         />
       </ListItem>
     );
@@ -166,7 +183,7 @@ const StockList: React.FC<StockListInterface> = ({
     <Box
       boxShadow={1}
       borderRadius={10}
-      className={classes.container}
+      className={desktop ? classes.desktopContainer : classes.mobileContainer}
       borderColor={Colors.lighterText}>
       <div className={classes.titleContainer}>
         <p className={classes.symbolsTitle}>Symbols List</p>
@@ -200,7 +217,7 @@ const StockList: React.FC<StockListInterface> = ({
         borderColor={Colors.lighterText}>
         <FixedSizeList
           className={classes.listContainer}
-          height={430}
+          height={size.height * 0.55}
           itemSize={45}
           itemCount={stockData.length}>
           {renderRow}
