@@ -25,6 +25,15 @@ const useStyles = makeStyles({
     padding: "20px 20px 20px 20px",
     backgroundColor: Colors.white,
   },
+  average: {
+    marginBottom: "5px",
+    marginTop: "5px",
+  },
+  averageSelected: {
+    marginBottom: "5px",
+    marginTop: "5px",
+    color: Colors.primary,
+  },
   desktopContainer: {
     width: "65%",
     height: "100%",
@@ -113,20 +122,28 @@ interface StockChartProps {
   desktop: boolean;
 }
 
+const emptyFinancialItem = {
+  symbol: "",
+  financialChartXValues: [],
+  financialChartCloseValues: [],
+  financialChartOpenValues: [],
+  financialChartHighValues: [],
+  financialChartLowValues: [],
+  Note: "",
+};
+
 const StockChart: React.FC<StockChartProps> = ({
   currentStock,
   desktop,
 }): ReactElement => {
   const classes = useStyles();
-  const [financialItem, setFinancialItem] = React.useState<IFinancialItem>({
-    symbol: "",
-    financialChartXValues: [],
-    financialChartCloseValues: [],
-    financialChartOpenValues: [],
-    financialChartHighValues: [],
-    financialChartLowValues: [],
-    Note: "",
-  });
+  const [financialItem, setFinancialItem] = React.useState<IFinancialItem>(
+    emptyFinancialItem
+  );
+  const [average, setAverage] = React.useState<IFinancialItem>(
+    emptyFinancialItem
+  );
+  const [isAverage, setIsAverage] = React.useState(false);
   const [typeOfChart, setTypeOfChart] = React.useState("candle");
   const [gettingStockData, setGettingStockDate] = React.useState(false);
   const [periodSelected, setPeriodSelected] = React.useState("Days");
@@ -143,12 +160,44 @@ const StockChart: React.FC<StockChartProps> = ({
     setTypeOfChart(e.target.value);
   };
 
+  function calculateAverage(elements: Array<string>): Array<string> {
+    // eslint-disable-next-line prefer-const
+    let averageArray: Array<string> = [];
+    let sum = 0;
+    elements.forEach((element, key) => {
+      sum += parseFloat(element);
+      averageArray.push(String(sum / (key + 1)));
+    });
+    return averageArray;
+  }
+
+  const calculateAverageValues = (response: IFinancialItem) => {
+    const {
+      financialChartCloseValues,
+      financialChartOpenValues,
+      financialChartHighValues,
+      financialChartLowValues,
+      financialChartXValues,
+      symbol,
+    } = response;
+    setAverage({
+      symbol,
+      financialChartCloseValues: calculateAverage(financialChartCloseValues),
+      financialChartOpenValues: calculateAverage(financialChartOpenValues),
+      financialChartHighValues: calculateAverage(financialChartHighValues),
+      financialChartLowValues: calculateAverage(financialChartLowValues),
+      financialChartXValues,
+      Note: "",
+    });
+  };
+
   React.useEffect(() => {
     setGettingStockDate(true);
     getFinancialItem(currentStock["1. symbol"], periodSelected).then(
       (response: IFinancialItem) => {
         if (!response.Note) {
           setFinancialItem(response);
+          calculateAverageValues(response);
           setClosePrice(response.financialChartCloseValues[0]);
           setOpenPrice(response.financialChartOpenValues[0]);
           setHighPrice(response.financialChartHighValues[0]);
@@ -222,6 +271,13 @@ const StockChart: React.FC<StockChartProps> = ({
             {customButton("Weeks")}
             {customButton("Monthly")}
           </ButtonGroup>
+          <Button
+            onClick={() => {
+              setIsAverage(!isAverage);
+            }}
+            className={isAverage ? classes.averageSelected : classes.average}>
+            Average
+          </Button>
           <FormControl className={classes.formControl}>
             <Select
               labelId="demo-simple-select-outlined-label"
@@ -241,13 +297,13 @@ const StockChart: React.FC<StockChartProps> = ({
             width={desktop ? size.width * 0.65 : size.width * 0.9}
             height={size.height * 0.52}
             color={Colors.primary}
-            financialItem={financialItem}
+            financialItem={isAverage ? average : financialItem}
           />
         ) : (
           <CandleStick
             width={desktop ? size.width * 0.65 : size.width * 0.9}
             height={size.height * 0.52}
-            financialItem={financialItem}
+            financialItem={isAverage ? average : financialItem}
           />
         )}
       </div>
