@@ -32,7 +32,7 @@ const useStyles = makeStyles({
   averageSelected: {
     marginBottom: "5px",
     marginTop: "5px",
-    color: Colors.primary,
+    backgroundColor: Colors.primary,
   },
   desktopContainer: {
     width: "65%",
@@ -48,8 +48,6 @@ const useStyles = makeStyles({
     marginBottom: "20px",
   },
   formControl: {
-    minWidth: 120,
-    maxWidth: 100,
     padding: "0px 0px 0px 0px",
   },
   currentStock: {
@@ -115,6 +113,12 @@ const useStyles = makeStyles({
     ...center,
     flexDirection: "row",
   },
+  circular: {
+    color: Colors.primary,
+  },
+  select: {
+    borderBottomColor: Colors.primary,
+  },
 });
 
 interface StockChartProps {
@@ -156,8 +160,8 @@ const StockChart: React.FC<StockChartProps> = ({
   const [content, setContent] = React.useState("");
   const size = useWindowDimensions();
 
-  const handleChartChange = (e) => {
-    setTypeOfChart(e.target.value);
+  const handleChartChange = (value) => {
+    setTypeOfChart(value);
   };
 
   function calculateAverage(elements: Array<string>): Array<string> {
@@ -244,7 +248,7 @@ const StockChart: React.FC<StockChartProps> = ({
       borderColor={Colors.lighterText}>
       <div className={classes.topContainer}>
         {gettingStockData ? (
-          <CircularProgress />
+          <CircularProgress className={classes.circular} />
         ) : (
           <div className={classes.titleContainer}>
             <p className={classes.currentStock}>{currentStock["2. name"]}</p>
@@ -278,17 +282,30 @@ const StockChart: React.FC<StockChartProps> = ({
             className={isAverage ? classes.averageSelected : classes.average}>
             Average
           </Button>
-          <FormControl className={classes.formControl}>
-            <Select
-              labelId="demo-simple-select-outlined-label"
-              id="demo-simple-select-outlined"
-              value={typeOfChart}
-              onChange={handleChartChange}
-              label="Age">
-              <MenuItem value="line">Line</MenuItem>
-              <MenuItem value="candle">Candle</MenuItem>
-            </Select>
-          </FormControl>
+          <div>
+            <Button
+              className={
+                typeOfChart === "line"
+                  ? classes.averageSelected
+                  : classes.average
+              }
+              onClick={() => {
+                handleChartChange("line");
+              }}>
+              Line
+            </Button>
+            <Button
+              className={
+                typeOfChart === "candle"
+                  ? classes.averageSelected
+                  : classes.average
+              }
+              onClick={() => {
+                handleChartChange("candle");
+              }}>
+              Candle
+            </Button>
+          </div>
         </div>
       </div>
       <div>

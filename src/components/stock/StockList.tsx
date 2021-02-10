@@ -107,6 +107,10 @@ const useStyles = makeStyles({
     fontSize: "25px",
     marginLeft: "10px",
   },
+  circular: {
+    color: Colors.primary,
+    marginLeft: "20px",
+  },
 });
 
 interface StockListInterface {
@@ -208,7 +212,11 @@ const StockList: React.FC<StockListInterface> = ({
             }}
           />
         </Grid>
-        <Grid item>{isGettingData ? <CircularProgress /> : null}</Grid>
+        <Grid item>
+          {isGettingData ? (
+            <CircularProgress className={classes.circular} />
+          ) : null}
+        </Grid>
       </Grid>
       <Box
         className={classes.boxList}
