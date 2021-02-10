@@ -1,13 +1,5 @@
 import React, { ReactElement } from "react";
-import {
-  Box,
-  Select,
-  FormControl,
-  MenuItem,
-  CircularProgress,
-  ButtonGroup,
-  Button,
-} from "@material-ui/core";
+import { Box, CircularProgress, ButtonGroup, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import CandleStick from "./CandleStick";
 import LineChart from "./LineChart";
@@ -160,7 +152,7 @@ const StockChart: React.FC<StockChartProps> = ({
   const [content, setContent] = React.useState("");
   const size = useWindowDimensions();
 
-  const handleChartChange = (value) => {
+  const handleChartChange = (value: string) => {
     setTypeOfChart(value);
   };
 
